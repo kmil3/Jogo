@@ -1,15 +1,15 @@
-package com.mygdx.game.desktop;
+package com.badlogic.drop.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.mygdx.game.MyGdxGame;
+import com.badlogic.drop.Drop;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = "jogo";
-		config.height = 505;
-		config.width = 400;
-		new LwjglApplication(new MyGdxGame(), config);
+		config.title = "Drop";
+		config.width = 800;
+		config.height = 480;
+		new LwjglApplication(new Drop(), config);
 	}
 }
