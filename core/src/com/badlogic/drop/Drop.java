@@ -3,7 +3,6 @@ package com.badlogic.drop;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,13 +20,16 @@ import java.util.Iterator;
 
 public class Drop extends ApplicationAdapter {
 
-    private Texture dropImage;
-    private Texture bucketImage;
+    private Texture bola_1_png;
+    private Texture bola_2_png;
+    private Texture bola_3_png;
+    private Texture bola_4_png;
+    private Texture lagarta_PNG;
     private Sound dropSound;
     private Music rainMusic;
     private OrthographicCamera camera;
     private SpriteBatch batch;
-    private Rectangle bucket;
+    private Rectangle lagarta;
     private Array<Rectangle> raindrops;
     private long lastDropTime;
     private State state;
@@ -39,16 +41,12 @@ public class Drop extends ApplicationAdapter {
 		state = State.RUN;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        dropImage = new Texture(Gdx.files.internal("droplet.png"));
-        bucketImage = new Texture(Gdx.files.internal("bucket.png"));
+        bola_1_png = new Texture(Gdx.files.internal("bola1.png"));
+        bola_2_png = new Texture(Gdx.files.internal("bola2.png"));
+        bola_3_png = new Texture(Gdx.files.internal("bola3.png"));
+        bola_4_png = new Texture(Gdx.files.internal("bola4.png"));
+        lagarta_PNG = new Texture(Gdx.files.internal("lagarta.png"));
 
-        // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-
-        // start the playback of the background music immediately
-        rainMusic.setLooping(true);
-        rainMusic.play();
 
         //create the Camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -56,11 +54,11 @@ public class Drop extends ApplicationAdapter {
         batch = new SpriteBatch();
 
         //creating the bucket
-        bucket = new Rectangle();
-        bucket.x = 800 / 2 - 64 / 2;
-        bucket.y = 20;
-        bucket.width = 64;
-        bucket.height = 64;
+        lagarta = new Rectangle();
+        lagarta.x = 800 / 2 - 64 / 2;
+        lagarta.y = 20;
+        lagarta.width = 50;
+        lagarta.height = 50;
 
         //creating the raindrops
         raindrops = new Array<Rectangle>();
@@ -93,9 +91,9 @@ public class Drop extends ApplicationAdapter {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(bucketImage, bucket.x, bucket.y);
+		batch.draw(lagarta_PNG, lagarta.x, lagarta.y);
 		for (Rectangle raindrop : raindrops) {
-			batch.draw(dropImage, raindrop.x, raindrop.y);
+			batch.draw(bola_1_png, raindrop.x, raindrop.y);
 		}
 		batch.end();
 
@@ -106,18 +104,18 @@ public class Drop extends ApplicationAdapter {
                     Vector3 touchPos = new Vector3();
                     touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
                     camera.unproject(touchPos);
-                    bucket.x = touchPos.x - 64 / 2;
+                    lagarta.x = touchPos.x - 64 / 2;
                 }
                 //check keyboard input
                 if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-                    bucket.x -= 200 * Gdx.graphics.getDeltaTime();
+                    lagarta.x -= 200 * Gdx.graphics.getDeltaTime();
                 if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-                    bucket.x += 200 * Gdx.graphics.getDeltaTime();
+                    lagarta.x += 200 * Gdx.graphics.getDeltaTime();
                 //check screen limits
-                if (bucket.x < 0)
-                    bucket.x = 0;
-                if (bucket.x > 800 - 64)
-                    bucket.x = 800 - 64;
+                if (lagarta.x < 0)
+                    lagarta.x = 0;
+                if (lagarta.x > 800 - 64)
+                    lagarta.x = 800 - 64;
                 //check time to create another raindrop
                 if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
                     spawnRaindrop();
@@ -129,7 +127,7 @@ public class Drop extends ApplicationAdapter {
                     if (raindrop.y + 64 < 0)
                         it.remove();
                     //check collision between bucket and raindrops
-                    if (raindrop.overlaps(bucket)) {
+                    if (raindrop.overlaps(lagarta)) {
                         dropSound.play();
                         it.remove();
                     }
@@ -157,8 +155,8 @@ public class Drop extends ApplicationAdapter {
 
 	@Override
     public void dispose() {
-        dropImage.dispose();
-        bucketImage.dispose();
+        bola_1_png.dispose();
+        lagarta_PNG.dispose();
         dropSound.dispose();
         rainMusic.dispose();
         batch.dispose();
