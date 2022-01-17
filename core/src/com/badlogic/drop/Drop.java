@@ -10,12 +10,16 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.awt.*;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.util.Iterator;
 
 public class Drop extends ApplicationAdapter {
@@ -25,8 +29,7 @@ public class Drop extends ApplicationAdapter {
     private Texture bola_3_png;
     private Texture bola_4_png;
     private Texture lagarta_PNG;
-    private Sound dropSound;
-    private Music rainMusic;
+    private Texture background;
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Rectangle lagarta;
@@ -34,6 +37,7 @@ public class Drop extends ApplicationAdapter {
     private long lastDropTime;
     private State state;
 	private BitmapFont font;
+    private static int pontos = 0;
 
     @Override
     public void create() {
@@ -56,13 +60,16 @@ public class Drop extends ApplicationAdapter {
         //creating the bucket
         lagarta = new Rectangle();
         lagarta.x = 800 / 2 - 64 / 2;
-        lagarta.y = 20;
-        lagarta.width = 50;
-        lagarta.height = 50;
+        lagarta.y = -20;
+        lagarta.width = 64;
+        lagarta.height = 64;
 
         //creating the raindrops
         raindrops = new Array<Rectangle>();
-        spawnRaindrop();
+            spawnRaindrop();
+            spawnRaindrop();
+            spawnRaindrop();
+            spawnRaindrop();
 
 		font = new BitmapFont();
     }
@@ -85,17 +92,27 @@ public class Drop extends ApplicationAdapter {
 			pause();
 		if (Gdx.input.isKeyPressed(Input.Keys.R))
 			resume();
-
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        //Gdx.gl.glClearColor(0.3f, 0.5f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        background = new Texture("fundo.jpeg");
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+        batch.draw(background,0,50);
 		batch.draw(lagarta_PNG, lagarta.x, lagarta.y);
-		for (Rectangle raindrop : raindrops) {
-			batch.draw(bola_1_png, raindrop.x, raindrop.y);
-		}
-		batch.end();
+        for(Rectangle r: raindrops) {
+            int x = MathUtils.random(0, 4);
+            if (x == 0) {
+                batch.draw(bola_1_png, r.x, r.y);
+            } else if (x == 1) {
+                batch.draw(bola_2_png, r.x, r.y);
+            }else if(x ==2 ){
+                batch.draw(bola_3_png, r.x, r.y);
+            }else{
+                batch.draw(bola_4_png, r.x, r.y);
+            }
+        }
+            batch.end();
 
 		switch (state) {
             case RUN:
@@ -120,18 +137,27 @@ public class Drop extends ApplicationAdapter {
                 if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
                     spawnRaindrop();
                 //move raindrops created
+                int i = 0;
                 for (Iterator<Rectangle> it = raindrops.iterator(); it.hasNext(); ) {
                     Rectangle raindrop = it.next();
-                    raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+                    raindrop.y -= 100 * Gdx.graphics.getDeltaTime();
                     //check if it is beyond the screen
-                    if (raindrop.y + 64 < 0)
-                        it.remove();
+                    if (raindrop.y + 64 < -20){
+                        raindrop.y = 400-64;
+                        raindrop.x = MathUtils.random(0, 800 - 64);
+                    }
                     //check collision between bucket and raindrops
                     if (raindrop.overlaps(lagarta)) {
-                        dropSound.play();
+                        if(i == 0 || i==1){
+                            pontos ++;
+                        }else {
+                           pontos --;
+                        }
                         it.remove();
                     }
+                    i ++;
                 }
+
                 break;
             case PAUSE:
             	batch.begin();
@@ -139,7 +165,9 @@ public class Drop extends ApplicationAdapter {
                 batch.end();
 				break;
         }
-
+        batch.begin();
+        font.draw(batch, String.valueOf(pontos), 20, 350);
+        batch.end();
 
     }
 
@@ -156,9 +184,10 @@ public class Drop extends ApplicationAdapter {
 	@Override
     public void dispose() {
         bola_1_png.dispose();
+        bola_2_png.dispose();
+        bola_3_png.dispose();
+        bola_4_png.dispose();
         lagarta_PNG.dispose();
-        dropSound.dispose();
-        rainMusic.dispose();
         batch.dispose();
     }
 
