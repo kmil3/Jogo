@@ -3,31 +3,25 @@ package com.badlogic.drop;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.awt.*;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.util.Iterator;
 
 public class Drop extends ApplicationAdapter {
 
-    private Texture bola_1_png;
-    private Texture bola_2_png;
-    private Texture bola_3_png;
-    private Texture bola_4_png;
+    private Texture meteoro_1;
+    private Texture meteoro_2;
+    private Texture meteoro_3;
+    private Texture meteoro_4;
     private Texture lagarta_PNG;
     private Texture background;
     private OrthographicCamera camera;
@@ -45,10 +39,10 @@ public class Drop extends ApplicationAdapter {
 		state = State.RUN;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        bola_1_png = new Texture(Gdx.files.internal("meteoro_1.png"));
-        bola_2_png = new Texture(Gdx.files.internal("meteoro_2.png"));
-        bola_3_png = new Texture(Gdx.files.internal("meteoro_3.png"));
-        bola_4_png = new Texture(Gdx.files.internal("meteoro_4.png"));
+        meteoro_1 = new Texture(Gdx.files.internal("meteoro_1.png"));
+        meteoro_2 = new Texture(Gdx.files.internal("meteoro_2.png"));
+        meteoro_3 = new Texture(Gdx.files.internal("meteoro_3.png"));
+        meteoro_4 = new Texture(Gdx.files.internal("meteoro_4.png"));
         lagarta_PNG = new Texture(Gdx.files.internal("lagarta.png"));
 
 
@@ -104,13 +98,13 @@ public class Drop extends ApplicationAdapter {
         for(Rectangle r: raindrops) {
             int x = MathUtils.random(0, 4);
             if (x == 0) {
-                batch.draw(bola_1_png, r.x, r.y);
+                batch.draw(meteoro_1, r.x, r.y);
             } else if (x == 1) {
-                batch.draw(bola_2_png, r.x, r.y);
+                batch.draw(meteoro_2, r.x, r.y);
             }else if(x ==2 ){
-                batch.draw(bola_3_png, r.x, r.y);
+                batch.draw(meteoro_3, r.x, r.y);
             }else{
-                batch.draw(bola_4_png, r.x, r.y);
+                batch.draw(meteoro_4, r.x, r.y);
             }
         }
             batch.end();
@@ -184,10 +178,10 @@ public class Drop extends ApplicationAdapter {
 
 	@Override
     public void dispose() {
-        bola_1_png.dispose();
-        bola_2_png.dispose();
-        bola_3_png.dispose();
-        bola_4_png.dispose();
+        meteoro_1.dispose();
+        meteoro_2.dispose();
+        meteoro_3.dispose();
+        meteoro_4.dispose();
         lagarta_PNG.dispose();
         batch.dispose();
     }
