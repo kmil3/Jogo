@@ -45,10 +45,10 @@ public class Drop extends ApplicationAdapter {
 		state = State.RUN;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        bola_1_png = new Texture(Gdx.files.internal("bola1.png"));
-        bola_2_png = new Texture(Gdx.files.internal("bola2.png"));
-        bola_3_png = new Texture(Gdx.files.internal("bola3.png"));
-        bola_4_png = new Texture(Gdx.files.internal("bola4.png"));
+        bola_1_png = new Texture(Gdx.files.internal("meteoro_1.png"));
+        bola_2_png = new Texture(Gdx.files.internal("meteoro_2.png"));
+        bola_3_png = new Texture(Gdx.files.internal("meteoro_3.png"));
+        bola_4_png = new Texture(Gdx.files.internal("meteoro_4.png"));
         lagarta_PNG = new Texture(Gdx.files.internal("lagarta.png"));
 
 
@@ -94,12 +94,13 @@ public class Drop extends ApplicationAdapter {
 			resume();
         //Gdx.gl.glClearColor(0.3f, 0.5f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        background = new Texture("fundo.jpeg");
+        background = new Texture("fundo.png");
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-        batch.draw(background,0,50);
+        batch.draw(background,0,0);
 		batch.draw(lagarta_PNG, lagarta.x, lagarta.y);
+        //ELE DESENHA AS 4 IMAGENS VÁRIAS VEZES NA MESMA POSIÇÃO
         for(Rectangle r: raindrops) {
             int x = MathUtils.random(0, 4);
             if (x == 0) {

@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Lagarta";
 		config.width = 800;
-		config.height = 480;
+		config.height = 450;
 		new LwjglApplication(new Drop(), config);
 	}
 }
