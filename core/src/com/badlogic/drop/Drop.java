@@ -23,6 +23,7 @@ public class Drop extends ApplicationAdapter {
     private Texture meteoro_3;
     private Texture meteoro_4;
     private Texture lagarta_PNG;
+    private Texture imagem_final;
     private Texture background;
     private OrthographicCamera camera;
     private SpriteBatch batch;
@@ -32,6 +33,8 @@ public class Drop extends ApplicationAdapter {
     private State state;
 	private BitmapFont font;
     private static int pontos = 0;
+    private Array<Texture> meteoros;
+
 
     @Override
     public void create() {
@@ -44,7 +47,12 @@ public class Drop extends ApplicationAdapter {
         meteoro_3 = new Texture(Gdx.files.internal("meteoro_3.png"));
         meteoro_4 = new Texture(Gdx.files.internal("meteoro_4.png"));
         lagarta_PNG = new Texture(Gdx.files.internal("lagarta.png"));
-
+        meteoros = new Array<>();
+        meteoros.add(meteoro_1);
+        meteoros.add(meteoro_2);
+        meteoros.add(meteoro_3);
+        meteoros.add(meteoro_4);
+        //int x = MathUtils.random(0, 4);
 
         //create the Camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -72,7 +80,7 @@ public class Drop extends ApplicationAdapter {
     private void spawnRaindrop() {
         Rectangle raindrop = new Rectangle();
         raindrop.x = MathUtils.random(0, 800 - 64);
-        raindrop.y = 480;
+        raindrop.y = 800;
         raindrop.width = 64;
         raindrop.height = 64;
         raindrops.add(raindrop);
@@ -86,7 +94,6 @@ public class Drop extends ApplicationAdapter {
 			pause();
 		if (Gdx.input.isKeyPressed(Input.Keys.R))
 			resume();
-        //Gdx.gl.glClearColor(0.3f, 0.5f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         background = new Texture("fundo.png");
 		camera.update();
@@ -94,18 +101,11 @@ public class Drop extends ApplicationAdapter {
 		batch.begin();
         batch.draw(background,0,0);
 		batch.draw(lagarta_PNG, lagarta.x, lagarta.y);
-        //ELE DESENHA AS 4 IMAGENS VÁRIAS VEZES NA MESMA POSIÇÃO
-        for(Rectangle r: raindrops) {
-            int x = MathUtils.random(0, 4);
-            if (x == 0) {
-                batch.draw(meteoro_1, r.x, r.y);
-            } else if (x == 1) {
-                batch.draw(meteoro_2, r.x, r.y);
-            }else if(x ==2 ){
-                batch.draw(meteoro_3, r.x, r.y);
-            }else{
-                batch.draw(meteoro_4, r.x, r.y);
-            }
+
+
+
+        for(int i = 0 ; i < raindrops.size; i ++) {
+            batch.draw(meteoros.get(i), raindrops.get(i).x, raindrops.get(i).y);
         }
             batch.end();
 
@@ -124,13 +124,20 @@ public class Drop extends ApplicationAdapter {
                 if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
                     lagarta.x += 200 * Gdx.graphics.getDeltaTime();
                 //check screen limits
-                if (lagarta.x < 0)
-                    lagarta.x = 0;
-                if (lagarta.x > 800 - 64)
-                    lagarta.x = 800 - 64;
+                if (lagarta.x < 0 ){
+                lagarta.x = 0;
+                lagarta_PNG = new Texture(Gdx.files.internal("lagarta.png"));
+            }
+
+                if (lagarta.x > 750 - 64){
+                    lagarta_PNG = new Texture(Gdx.files.internal("lagarta2.png"));
+                    lagarta.x = 800 - 64;}
                 //check time to create another raindrop
-                if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+                if(raindrops.size < 4){
                     spawnRaindrop();
+                }
+                //if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+                    //spawnRaindrop();
                 //move raindrops created
                 int i = 0;
                 for (Iterator<Rectangle> it = raindrops.iterator(); it.hasNext(); ) {
@@ -143,12 +150,20 @@ public class Drop extends ApplicationAdapter {
                     }
                     //check collision between bucket and raindrops
                     if (raindrop.overlaps(lagarta)) {
-                        if(i == 0 || i==1){
+                        if(i == 0 || i == 1){
                             pontos ++;
-                        }else {
+
+                        }else if(i == 2 || i == 3){
                            pontos --;
                         }
-                        it.remove();
+                        if(pontos == 15){
+                            pause();
+                            imagem_final = new Texture(Gdx.files.internal("meteoro_1.png"));
+                            batch.draw(imagem_final,0,0);
+                        }
+                        raindrop.x = MathUtils.random(0, 800 - 64);
+                        raindrop.y = 450;
+                        //it.remove();
                     }
                     i ++;
                 }
@@ -161,7 +176,7 @@ public class Drop extends ApplicationAdapter {
 				break;
         }
         batch.begin();
-        font.draw(batch, String.valueOf(pontos), 20, 350);
+        font.draw(batch, String.valueOf(pontos), 10, 470);
         batch.end();
 
     }
